@@ -332,15 +332,10 @@ int main() {
         Lubang(Koordinat(tengah, bawah), 30.f, sf::Color::Black, "Lubang Tengah Bawah"),
         Lubang(Koordinat(kanan, bawah), 30.f, sf::Color::Black, "Lubang Kanan Bawah")
     };
+
     cue stick(&bolaPutih);
     sf::Clock pewaktu;
-    while (Jendela_Fisika.isOpen()){
-        sf::Vector2i posisiPixelmouse = sf::Mouse::getPosition(Jendela_Fisika);
-        sf::Vector2f posisiduniamouse = Jendela_Fisika.mapPixelToCoords(posisiPixelmouse);
-
-        float deltatime = pewaktu.restart().asSeconds();
-        
-while (Jendela_Fisika.isOpen()) {
+    while (Jendela_Fisika.isOpen()) {
         sf::Vector2i posisiPixelmouse = sf::Mouse::getPosition(Jendela_Fisika);
         sf::Vector2f posisiduniamouse = Jendela_Fisika.mapPixelToCoords(posisiPixelmouse);
 
@@ -391,7 +386,6 @@ while (Jendela_Fisika.isOpen()) {
         Jendela_Fisika.display();
     }
     
-    }
     return 0;
     
 
