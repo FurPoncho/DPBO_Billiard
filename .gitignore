@@ -1,3 +1,4 @@
-.vscode/
-learn/
+*:Zone.Identifier
+*.exe
+Learn/
 PILE/
