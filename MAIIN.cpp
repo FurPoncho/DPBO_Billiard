@@ -102,6 +102,7 @@ class Manage_Layar {
 
 };
 
+// do last cause messy is better than unfinished
 class Manage_asset {
     public:
         Manage_asset(){
@@ -132,7 +133,7 @@ struct Context {
     }
 };  
 
-class Layar_Menu : public Layar {
+class Layar_Pengaturan : public Layar {
     private:
     sf::Font font1;
     sf::Texture texture1;
@@ -143,11 +144,11 @@ class Layar_Menu : public Layar {
     std::vector<sf::Sprite> sprites;
 
     public:
-    Layar_Menu(std::shared_ptr<Context> &context):
+    Layar_Pengaturan(std::shared_ptr<Context> &context):
     
     the_context(context){
     };
-    ~Layar_Menu(){};
+    ~Layar_Pengaturan(){};
 
     void Init() override{
         // FONT MUST BE STORED SOMEWHERE PERM, 
@@ -199,6 +200,102 @@ class Layar_Menu : public Layar {
     };
 };
 
+class Layar_Menu : public Layar {
+    private:
+    sf::Font font1;
+    sf::Texture texture1;
+    sf::RectangleShape ruler;
+
+    std::shared_ptr<Context> the_context;
+    std::vector<sf::Text> texts;
+    std::vector<std::string> strings;
+    std::vector<sf::Sprite> sprites;
+    std::vector<sf::Shape> shapes;
+
+    public:
+    Layar_Menu(std::shared_ptr<Context> &context):
+    the_context(context){
+    };
+    ~Layar_Menu(){};
+
+    void Init() override{
+        // imports
+        // FONT MUST BE STORED SOMEWHERE PERM, 
+        if (!font1.openFromFile("font/ARIAL.TTF")){
+            exit(9);   
+            //error handling later
+        }
+        if (!texture1.loadFromFile("img/ponbg1.png")){
+            exit(8);   
+            //error handling later
+        }
+        sf::Sprite a(texture1);
+        sprites.push_back(a);
+        
+        strings.insert(strings.begin(),{"Top Down Billiard","Mulai Permainan", "Pengaturan"});
+        
+        for (int i=0; i < strings.size();i++){
+            sf::Text& ref = texts.emplace_back(font1,strings[i],14);
+            ref.setFillColor(sf::Color::Blue);
+        }
+
+        // always follow, size, origin, position 
+        texts[0].setCharacterSize(180);
+        // center that bitch
+        texts[0].setOrigin({texts[0].getLocalBounds().size.x/2,texts[0].getLocalBounds().size.y/2});
+        texts[0].setPosition({800,250});
+        texts[0].setRotation(sf::degrees(-10));
+        
+        // center that bitch
+        texts[1].setCharacterSize(80);
+        texts[1].setOrigin({texts[1].getLocalBounds().size.x/2,texts[1].getLocalBounds().size.y/2});
+        texts[1].setPosition({800,450});
+        
+        // center that bitch
+        texts[2].setCharacterSize(80);
+        texts[2].setOrigin({texts[2].getLocalBounds().size.x/2,texts[2].getLocalBounds().size.y/2});
+        texts[2].setPosition({800,580});
+        
+        
+        // ruler.setSize(texts[0].getGlobalBounds().size);
+        // ruler.setOrigin(ruler.getLocalBounds().size/2.f);
+        // ruler.setPosition(texts[0].getPosition());
+        // ruler.setPosition(texts[0].getOrigin());
+        // ruler.setFillColor(sf::Color::Red);
+
+
+    };
+    
+    void Process() override {
+        while (const std::optional event = the_context->the_window->pollEvent()){
+            if (event->is<sf::Event::Closed>()){
+                the_context->the_layar->HapusSemua();
+            }
+            else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()){
+                if (keyPressed->code == sf::Keyboard::Key::Up)
+
+            }
+            
+        }
+        
+    };
+    void Update(const sf::Time& deltaTime) override {
+        
+    };
+    void Draw() override{
+        the_context->the_window->clear();
+        for (const auto& thing : sprites) {
+            the_context->the_window->draw(thing);
+        }
+        the_context->the_window->draw(ruler);
+        for (const auto& thing : texts) {
+            // std::cout<<thing.getString().toAnsiString()<<"\n";
+            the_context->the_window->draw(thing);
+        }
+        the_context->the_window->display();
+    };
+};
+
 
 // EVENTUALLY well make all this 
 // enum layars{
@@ -219,8 +316,9 @@ class Game{
 public:
     Game(): 
     the_context(std::make_shared<Context>()) {
-        the_context->the_window->create(sf::VideoMode({1600,900}),"Top Down Billiard");
+        the_context->the_window->create(sf::VideoMode({1600,900}),"Top Down Billiard",sf::Style::Close);
         the_context->the_window->setView(sf::View(sf::FloatRect({0.f, 0.f},{1600.f, 900.f})));
+        // the_context->the_window
         the_context->the_layar->Tambah(std::make_unique<Layar_Menu>(the_context));
         // 3.1 newest feature, but we already implemented the old way, sunk cost fallacy
         // the_context->the_window->setFramerateLimit(30);
