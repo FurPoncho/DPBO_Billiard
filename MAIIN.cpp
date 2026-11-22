@@ -3,6 +3,7 @@
 #include <stack>
 #include <vector>
 #include <string>
+#include <optional>
 
 #include <iostream>
 
@@ -210,7 +211,6 @@ class Layar_Menu : public Layar {
     std::vector<sf::Text> texts;
     std::vector<std::string> strings;
     std::vector<sf::Sprite> sprites;
-    std::vector<sf::Shape> shapes;
 
     public:
     Layar_Menu(std::shared_ptr<Context> &context):
@@ -272,8 +272,9 @@ class Layar_Menu : public Layar {
                 the_context->the_layar->HapusSemua();
             }
             else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()){
-                if (keyPressed->code == sf::Keyboard::Key::Up)
-
+                if (keyPressed->code == sf::Keyboard::Key::Up) {
+                    // TODO: pindah pilihan menu ke atas
+                }
             }
             
         }
