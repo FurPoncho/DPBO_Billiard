@@ -1,9 +1,11 @@
-.vscode/tasks.json
-.vscode/c_cpp_properties.json
 .vscode/c_cpp_properties.json
 .vscode/settings.json
 .vscode/tasks.json
+.vscode/
 *:Zone.Identifier
 *.exe
 Learn/
 PILE/
+.vscode/
+game
+game
