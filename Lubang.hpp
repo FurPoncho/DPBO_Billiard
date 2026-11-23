@@ -9,6 +9,7 @@
 #include <vector>
 #include "Koordinat.hpp"
 #include "Bentuk.hpp"
+#include "Bola.hpp"
 using std::cout;
 using std::endl;
 
