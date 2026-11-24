@@ -13,6 +13,7 @@ private:
     bool status_bola;
     sf::CircleShape wujud_bola;
     const Meja* meja_ref;
+    bool menyentuhRel_ = false;  // di-set saat bola memantul di rel; dibaca GameLogic
 
 public:
     Bola(Koordinat pos = Koordinat(), float r = 20.0f, sf::Color w = sf::Color::White,
@@ -21,6 +22,7 @@ public:
           Kecepatan{0.f, 0.f}, meja_ref(meja)
     {
         wujud_bola.setRadius(radius);
+        wujud_bola.setPointCount(64);   // lingkaran lebih halus untuk tekstur
         wujud_bola.setOrigin({radius, radius});
         wujud_bola.setPosition(getPosisiSFML());
 
@@ -53,34 +55,37 @@ public:
             Kecepatan = {0.f, 0.f};
         }
 
-        if (meja_ref != nullptr) {
+        // Dinding tidak aktif di dekat mulut lubang, supaya bola bisa masuk ke lubang
+        // yang letaknya di luar tepi kain. Pantulan hanya terjadi kalau bola bergerak MENUJU dinding.
+        if (meja_ref != nullptr && !meja_ref->dekatMulutLubang(Posisi_dia.x, Posisi_dia.y, Kecepatan.x, Kecepatan.y)) {
             float koefisien_pantul = -0.85f;
 
             if (Posisi_dia.x - radius <= meja_ref->getbataskiri()) {
                 Posisi_dia.x = meja_ref->getbataskiri() + radius;
-                Kecepatan.x *= koefisien_pantul;
+                if (Kecepatan.x < 0.f) { menyentuhRel_ = true; Kecepatan.x *= koefisien_pantul; }
             }
             else if (Posisi_dia.x + radius >= meja_ref->getbataskanan()) {
                 Posisi_dia.x = meja_ref->getbataskanan() - radius;
-                Kecepatan.x *= koefisien_pantul;
+                if (Kecepatan.x > 0.f) { menyentuhRel_ = true; Kecepatan.x *= koefisien_pantul; }
             }
 
             if (Posisi_dia.y - radius <= meja_ref->getbatasatas()) {
                 Posisi_dia.y = meja_ref->getbatasatas() + radius;
-                Kecepatan.y *= koefisien_pantul;
+                if (Kecepatan.y < 0.f) { menyentuhRel_ = true; Kecepatan.y *= koefisien_pantul; }
             }
             else if (Posisi_dia.y + radius >= meja_ref->getbatasbawah()) {
                 Posisi_dia.y = meja_ref->getbatasbawah() - radius;
-                Kecepatan.y *= koefisien_pantul;
+                if (Kecepatan.y > 0.f) { menyentuhRel_ = true; Kecepatan.y *= koefisien_pantul; }
             }
         }
 
         wujud_bola.setPosition(getPosisiSFML());
     }
 
-    void cekTabrakanBola(Bola& bolaLain) {
+    // Mengembalikan true kalau kedua bola benar-benar bertabrakan pada pemanggilan ini.
+    bool cekTabrakanBola(Bola& bolaLain) {
         if (!this->status_bola || !bolaLain.status_bola || this == &bolaLain) {
-            return;
+            return false;
         }
 
         float dx = bolaLain.Posisi_dia.x - this->Posisi_dia.x;
@@ -120,7 +125,9 @@ public:
 
             this->wujud_bola.setPosition(this->getPosisiSFML());
             bolaLain.wujud_bola.setPosition(bolaLain.getPosisiSFML());
+            return true;
         }
+        return false;
     }
 
     void kirim_ke_jendela(sf::RenderWindow& Jendela) override {
@@ -137,5 +144,7 @@ public:
     void setStatus(bool status) { status_bola = status; }
     std::string getNama() const { return nama_bola; }
     int getNomor() const { return nomor_bola; }
+    // Baca lalu hapus penanda "baru saja memantul di rel".
+    bool ambilDanResetRel() { bool r = menyentuhRel_; menyentuhRel_ = false; return r; }
     bool sedangBergerak() const { return (Kecepatan.x != 0.f || Kecepatan.y != 0.f); }
 };
