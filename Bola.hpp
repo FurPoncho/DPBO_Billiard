@@ -47,7 +47,8 @@ public:
         Posisi_dia.x += Kecepatan.x * deltatime;
         Posisi_dia.y += Kecepatan.y * deltatime;
 
-        float gesekan_kain = 0.992f;
+        // Gesekan kain dinormalkan ke 60 FPS agar konsisten di semua refresh rate & sub-step
+        float gesekan_kain = std::pow(0.992f, deltatime * 60.f);
         Kecepatan.x *= gesekan_kain;
         Kecepatan.y *= gesekan_kain;
 
@@ -98,12 +99,17 @@ public:
             float nx = dx / jarak;
             float ny = dy / jarak;
 
+            // 1. Pisahkan posisi bola yang tumpang tindih
             float overlap = 0.5f * (totalRadius - jarak);
             this->Posisi_dia.x -= nx * overlap;
             this->Posisi_dia.y -= ny * overlap;
             bolaLain.Posisi_dia.x += nx * overlap;
             bolaLain.Posisi_dia.y += ny * overlap;
 
+            this->wujud_bola.setPosition(this->getPosisiSFML());
+            bolaLain.wujud_bola.setPosition(bolaLain.getPosisiSFML());
+
+            // 2. Proyeksi kecepatan ke sumbu normal & tangensial
             float tx = -ny;
             float ty = nx;
 
@@ -113,7 +119,13 @@ public:
             float dpNorm1 = this->Kecepatan.x * nx + this->Kecepatan.y * ny;
             float dpNorm2 = bolaLain.Kecepatan.x * nx + bolaLain.Kecepatan.y * ny;
 
-            float elastisitas = 0.95f;
+            // 3. GUARD CLAUSE: Jika bola sudah saling menjauh, jangan tukar kecepatan lagi
+            if (dpNorm1 - dpNorm2 <= 0.f) {
+                return false;
+            }
+
+            // 4. Tukar momentum normal dengan elastisitas bola billiard
+            float elastisitas = 0.98f;
             float normBaru1 = dpNorm2 * elastisitas;
             float normBaru2 = dpNorm1 * elastisitas;
 
@@ -123,8 +135,6 @@ public:
             bolaLain.Kecepatan.x = (tx * dpTan2) + (nx * normBaru2);
             bolaLain.Kecepatan.y = (ty * dpTan2) + (ny * normBaru2);
 
-            this->wujud_bola.setPosition(this->getPosisiSFML());
-            bolaLain.wujud_bola.setPosition(bolaLain.getPosisiSFML());
             return true;
         }
         return false;
