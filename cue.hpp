@@ -96,6 +96,14 @@ class cue : public Bentuk {
         return Vektor_Dorong;
     }
 
+    // Tekstur stik: ujung pukul harus di sisi KANAN gambar (sesuai cue.png).
+    void setTexture(const sf::Texture* tekstur) {
+        if (tekstur != nullptr) {
+            wujud_cue.setTexture(tekstur);
+            wujud_cue.setFillColor(sf::Color::White);
+        }
+    }
+
     void setaktif(bool status) {aktif_tusuk = status;}
     bool isaktif() const {return aktif_tusuk;}
     float getKekuatan() const {return power;}
