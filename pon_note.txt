@@ -17,3 +17,11 @@ SFML 2 and SFML 3 event handling. You should use const std::optional event = win
 
 Storing sf::Font objects inside a std::map is memory-safe because std::map guarantees pointer and reference stability when elements are added or removed. In SFML, sf::Text stores a raw pointer to its sf::Font, so that font object must remain at the exact same memory address for the entire lifetime of the text.
 <!-- MF!! sf::texts is a coward, stupid raw pointers. -->
+
+
+ACTUAL NOTE:
+init structue: sprites, sounds, text (size, origin, position)
+
+process method is seperate
+
+draw: sprites, texts (wow that's it. just 2 vector list to draw)

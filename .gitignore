@@ -7,4 +7,6 @@
 Learn/
 PILE/
 game
-game
+Makefile
+test.cpp
+test.hpp

@@ -1,0 +1,31 @@
+file ini dipakai untuk mencatat id dari semua asset di game
+setelah pon buat asset manager class
+
+FONTS
+10 = ARIAL.TTF
+
+TEXTURES
+10 = Layar_Menu_default.png
+11 = Layar_Menu_1.png
+12 = Layar_Menu_2.png
+13 = Layar_Menu_3.png
+
+30 = Layar_Setup.png
+31 = 
+32 = 
+33 = 
+34 = 
+
+50 = Layar_Bermain.png
+
+70 = Layar_Pause_...
+
+90 = Layar_Pengaturan_...
+
+
+BUFFERS
+1 = bgm_utama.ogg
+
+SOUNDS
+[0] = bgm_utama.ogg
+
